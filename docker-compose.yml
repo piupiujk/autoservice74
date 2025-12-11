@@ -7,5 +7,3 @@ services:
       - .env
     ports:
       - '${EXTERNAL_PORT}:${INTERNAL_PORT}'
-    volumes:
-      - ./autoservice/migrations:/service/migrations
