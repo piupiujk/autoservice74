@@ -13,4 +13,4 @@
 	docker compose --env-file .env -f docker-compose.yml down
 
 ## Запуск тестов
-    docker exec autoservice pytest tests -s -v
+    docker exec user-service pytest tests -s -v

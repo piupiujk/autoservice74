@@ -1,9 +1,9 @@
 services:
   autoservice:
-    container_name: autoservice
+    container_name: user-service
     build:
-      context: .
+      context: ./user-service
     env_file:
       - .env
     ports:
-      - '${EXTERNAL_PORT}:${INTERNAL_PORT}'
+      - '${USER_SERVICE_EXTERNAL_PORT}:${USER_SERVICE_INTERNAL_PORT}'
