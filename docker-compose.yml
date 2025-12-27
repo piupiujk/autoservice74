@@ -1,5 +1,5 @@
 services:
-  autoservice:
+  user-service:
     container_name: user-service
     build:
       context: ./user-service
@@ -7,3 +7,42 @@ services:
       - .env
     ports:
       - '${USER_SERVICE_EXTERNAL_PORT}:${USER_SERVICE_INTERNAL_PORT}'
+
+  order-service:
+    container_name: order-service
+    build:
+      context: ./order-service
+    env_file:
+      - .env
+    ports:
+      - '${ORDER_SERVICE_EXTERNAL_PORT}:${ORDER_SERVICE_INTERNAL_PORT}'
+    volumes:
+      - ./order-service/migrations:/autoservice/migrations
+    depends_on:
+      db-order-service-local:
+        condition: service_healthy
+
+  db-order-service-local:
+    container_name: db-order-service-local
+    image: postgres:15-alpine
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=order-db
+      - POSTGRES_PASSWORD=${ORDER_POSTGRES_PASSWORD}
+    ports:
+      - '${ORDER_DB_EXTERNAL_PORT}:${ORDER_DB_INTERNAL_PORT}'
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${ORDER_POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  product-service:
+    container_name: product-service
+    build:
+      context: ./product-service
+    env_file:
+      - .env
+    ports:
+      - '${PRODUCT_SERVICE_EXTERNAL_PORT}:${PRODUCT_SERVICE_INTERNAL_PORT}'

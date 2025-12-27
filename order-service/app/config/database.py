@@ -11,13 +11,13 @@ class DatabaseSettings(BaseSettings):
     Предоставляет метод для работы с настройками БД.
     """
 
-    internal_port: int = Field(alias='user_db_internal_port')
-    external_port: int = Field(alias='user_db_external_port')
+    internal_port: int = Field(alias='order_db_internal_port')
+    external_port: int = Field(alias='order_db_external_port')
 
-    user: str = Field(alias='user_postgres_user')
-    password: str = Field(alias='user_postgres_password')
-    host: str = Field(alias='user_postgres_host')
-    db_name: str = Field(alias='user_postgres_db')
+    user: str = Field(alias='order_postgres_user')
+    password: str = Field(alias='order_postgres_password')
+    host: str = Field(alias='order_postgres_host')
+    db_name: str = Field(alias='order_postgres_db')
 
     @property
     def db_url(self) -> str:
