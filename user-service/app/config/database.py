@@ -3,11 +3,10 @@ from pydantic_settings import BaseSettings
 
 ASYNC_DRIVER = 'postgresql+asyncpg'
 
-
 class DatabaseSettings(BaseSettings):
     """Настройки приложения.
 
-    Загружает конфигурацию из переменных окружения из файла local.env.
+    Загружает конфигурацию из переменных окружения.
     Предоставляет метод для работы с настройками БД.
     """
 
