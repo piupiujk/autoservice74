@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/order-service" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/product-service" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/user-service" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gateway" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="Poetry (autoservice74)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

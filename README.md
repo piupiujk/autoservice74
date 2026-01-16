@@ -6,14 +6,15 @@
 ## Запуск сервиса
     docker compose --env-file .env -f docker-compose.yml up
 #### Сервисы будет доступен по адресам:
-    User-Service    http://127.0.0.1:8000    
-    Product-Service http://127.0.0.1:8001    
-    Order-Service   http://127.0.0.1:8002
+    Gateway         http://127.0.0.1:8000
+    User-Service    http://127.0.0.1:8001    
+    Product-Service http://127.0.0.1:8002    
+    Order-Service   http://127.0.0.1:8003
 
 #### Документация:
-    User-Service    http://127.0.0.1:8000/docs    
-    Product-Service http://127.0.0.1:8001/docs    
-    Order-Service   http://127.0.0.1:8002/docs
+    User-Service    http://127.0.0.1:8001/docs    
+    Product-Service http://127.0.0.1:8002/docs    
+    Order-Service   http://127.0.0.1:8003/docs
 
 ## Остановка сервиса
 	docker compose --env-file .env -f docker-compose.yml down

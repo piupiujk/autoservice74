@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Body
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,10 +24,10 @@ async def ping() -> dict[str, str]:
 
 @router.post('/products', tags=['products'], status_code=status.HTTP_201_CREATED)
 async def create_product(
-    name: str,
-    schedule_time: int,
-    price: int,
-    is_active: bool = True,
+    name: str = Body(...),
+    schedule_time: int = Body(...),
+    price: int = Body(...),
+    is_active: bool = Body(True),
     dao: ProductDAO = Depends(get_product_dao)
 ) -> dict:
     """Создание новой услуги."""

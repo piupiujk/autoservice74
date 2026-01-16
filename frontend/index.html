@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Тестирование Автосервиса 74</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        h1, h2 {
+            color: #1a3c5a;
+        }
+        
+        .api-form {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 10px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #1a3c5a;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 2px;
+        }
+        
+        button:hover {
+            background-color: #00a8ff;
+        }
+        
+        .button-group {
+            margin: 10px 0;
+        }
+        
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .endpoint-info {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Тестирование Автосервиса 74</h1>
+    <p>Этот интерфейс позволяет тестировать API через gateway.</p>
+
+    <!-- User Service -->
+    <div class="container">
+        <h2>Пользователи (User Service)</h2>
+        
+        <!-- GET /users -->
+        <div class="api-form">
+            <div class="endpoint-info">GET /users - Получить всех пользователей</div>
+            <button onclick="testEndpoint('GET', '/users')">Выполнить запрос</button>
+            <div id="response-users" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- GET /users/{id} -->
+        <div class="api-form">
+            <div class="endpoint-info">GET /users/{id} - Получить пользователя по ID</div>
+            <div class="form-group">
+                <label for="userId">ID пользователя:</label>
+                <input type="number" id="userId" placeholder="Введите ID пользователя">
+            </div>
+            <button onclick="testEndpoint('GET', '/users/' + document.getElementById('userId').value)">Выполнить запрос</button>
+            <div id="response-user" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- POST /users -->
+        <div class="api-form">
+            <div class="endpoint-info">POST /users - Создать нового пользователя</div>
+            <div class="form-group">
+                <label for="firstName">Имя:</label>
+                <input type="text" id="firstName" placeholder="Введите имя">
+            </div>
+            <div class="form-group">
+                <label for="lastName">Фамилия:</label>
+                <input type="text" id="lastName" placeholder="Введите фамилию">
+            </div>
+            <div class="form-group">
+                <label for="patronymic">Отчество:</label>
+                <input type="text" id="patronymic" placeholder="Введите отчество (необязательно)">
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="Введите email (необязательно)">
+            </div>
+            <div class="form-group">
+                <label for="phone">Телефон:</label>
+                <input type="text" id="phone" placeholder="Введите телефон (необязательно)">
+            </div>
+            <button onclick="createUser()">Создать пользователя</button>
+            <div id="response-create-user" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- PATCH /users/{id} -->
+        <div class="api-form">
+            <div class="endpoint-info">PATCH /users/{id} - Обновить пользователя</div>
+            <div class="form-group">
+                <label for="updateUserId">ID пользователя:</label>
+                <input type="number" id="updateUserId" placeholder="Введите ID пользователя">
+            </div>
+            <div class="form-group">
+                <label for="updateFirstName">Новое имя:</label>
+                <input type="text" id="updateFirstName" placeholder="Введите новое имя (оставьте пустым, если не хотите менять)">
+            </div>
+            <div class="form-group">
+                <label for="updateLastName">Новая фамилия:</label>
+                <input type="text" id="updateLastName" placeholder="Введите новую фамилию (оставьте пустым, если не хотите менять)">
+            </div>
+            <div class="form-group">
+                <label for="updatePatronymic">Новое отчество:</label>
+                <input type="text" id="updatePatronymic" placeholder="Введите новое отчество (оставьте пустым, если не хотите менять)">
+            </div>
+            <div class="form-group">
+                <label for="updateEmail">Новый email:</label>
+                <input type="email" id="updateEmail" placeholder="Введите новый email (оставьте пустым, если не хотите менять)">
+            </div>
+            <div class="form-group">
+                <label for="updatePhone">Новый телефон:</label>
+                <input type="text" id="updatePhone" placeholder="Введите новый телефон (оставьте пустым, если не хотите менять)">
+            </div>
+            <button onclick="updateUser()">Обновить пользователя</button>
+            <div id="response-update-user" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- DELETE /users/{id} -->
+        <div class="api-form">
+            <div class="endpoint-info">DELETE /users/{id} - Удалить пользователя</div>
+            <div class="form-group">
+                <label for="deleteUserId">ID пользователя:</label>
+                <input type="number" id="deleteUserId" placeholder="Введите ID пользователя для удаления">
+            </div>
+            <button onclick="deleteUser()">Удалить пользователя</button>
+            <div id="response-delete-user" class="response" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Product Service -->
+    <div class="container">
+        <h2>Услуги (Product Service)</h2>
+        
+        <!-- GET /products -->
+        <div class="api-form">
+            <div class="endpoint-info">GET /products - Получить все услуги</div>
+            <button onclick="testEndpoint('GET', '/products')">Выполнить запрос</button>
+            <div id="response-products" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- GET /products/{id} -->
+        <div class="api-form">
+            <div class="endpoint-info">GET /products/{id} - Получить услугу по ID</div>
+            <div class="form-group">
+                <label for="productId">ID услуги:</label>
+                <input type="number" id="productId" placeholder="Введите ID услуги">
+            </div>
+            <button onclick="testEndpoint('GET', '/products/' + document.getElementById('productId').value)">Выполнить запрос</button>
+            <div id="response-product" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- POST /products -->
+        <div class="api-form">
+            <div class="endpoint-info">POST /products - Создать новую услугу</div>
+            <div class="form-group">
+                <label for="productName">Название:</label>
+                <input type="text" id="productName" placeholder="Введите название услуги">
+            </div>
+            <div class="form-group">
+                <label for="scheduleTime">Время выполнения (мин):</label>
+                <input type="number" id="scheduleTime" placeholder="Введите время в минутах">
+            </div>
+            <div class="form-group">
+                <label for="productPrice">Цена (руб):</label>
+                <input type="number" id="productPrice" placeholder="Введите цену">
+            </div>
+            <div class="form-group">
+                <label for="productActive">Активна:</label>
+                <select id="productActive">
+                    <option value="true">Да</option>
+                    <option value="false">Нет</option>
+                </select>
+            </div>
+            <button onclick="createProduct()">Создать услугу</button>
+            <div id="response-create-product" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- PATCH /products/{id} -->
+        <div class="api-form">
+            <div class="endpoint-info">PATCH /products/{id} - Обновить услугу</div>
+            <div class="form-group">
+                <label for="updateProductId">ID услуги:</label>
+                <input type="number" id="updateProductId" placeholder="Введите ID услуги">
+            </div>
+            <div class="form-group">
+                <label for="updateProductName">Новое название:</label>
+                <input type="text" id="updateProductName" placeholder="Введите новое название (оставьте пустым, если не хотите менять)">
+            </div>
+            <div class="form-group">
+                <label for="updateScheduleTime">Новое время выполнения (мин):</label>
+                <input type="number" id="updateScheduleTime" placeholder="Введите новое время (оставьте пустым, если не хотите менять)">
+            </div>
+            <div class="form-group">
+                <label for="updateProductPrice">Новая цена (руб):</label>
+                <input type="number" id="updateProductPrice" placeholder="Введите новую цену (оставьте пустым, если не хотите менять)">
+            </div>
+            <div class="form-group">
+                <label for="updateProductActive">Активна:</label>
+                <select id="updateProductActive">
+                    <option value="">Оставить без изменения</option>
+                    <option value="true">Да</option>
+                    <option value="false">Нет</option>
+                </select>
+            </div>
+            <button onclick="updateProduct()">Обновить услугу</button>
+            <div id="response-update-product" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- DELETE /products/{id} -->
+        <div class="api-form">
+            <div class="endpoint-info">DELETE /products/{id} - Удалить услугу</div>
+            <div class="form-group">
+                <label for="deleteProductId">ID услуги:</label>
+                <input type="number" id="deleteProductId" placeholder="Введите ID услуги для удаления">
+            </div>
+            <button onclick="deleteProduct()">Удалить услугу</button>
+            <div id="response-delete-product" class="response" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Order Service -->
+    <div class="container">
+        <h2>Заказы (Order Service)</h2>
+        
+        <!-- GET /orders -->
+        <div class="api-form">
+            <div class="endpoint-info">GET /orders - Получить все заказы</div>
+            <button onclick="testEndpoint('GET', '/orders')">Выполнить запрос</button>
+            <div id="response-orders" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- GET /orders/{id} -->
+        <div class="api-form">
+            <div class="endpoint-info">GET /orders/{id} - Получить заказ по ID</div>
+            <div class="form-group">
+                <label for="orderId">ID заказа:</label>
+                <input type="text" id="orderId" placeholder="Введите ID заказа (UUID)">
+            </div>
+            <button onclick="testEndpoint('GET', '/orders/' + document.getElementById('orderId').value)">Выполнить запрос</button>
+            <div id="response-order" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- POST /orders -->
+        <div class="api-form">
+            <div class="endpoint-info">POST /orders - Создать новый заказ</div>
+            <div class="form-group">
+                <label for="orderUserId">ID пользователя:</label>
+                <input type="number" id="orderUserId" placeholder="Введите ID пользователя">
+            </div>
+            <div class="form-group">
+                <label for="orderProductId">ID услуги:</label>
+                <input type="number" id="orderProductId" placeholder="Введите ID услуги">
+            </div>
+            <button onclick="createOrder()">Создать заказ</button>
+            <div id="response-create-order" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- PATCH /orders/{id} -->
+        <div class="api-form">
+            <div class="endpoint-info">PATCH /orders/{id} - Обновить заказ</div>
+            <div class="form-group">
+                <label for="updateOrderId">ID заказа:</label>
+                <input type="text" id="updateOrderId" placeholder="Введите ID заказа (UUID)">
+            </div>
+            <div class="form-group">
+                <label for="updateOrderUserId">Новый ID пользователя:</label>
+                <input type="number" id="updateOrderUserId" placeholder="Введите новый ID пользователя (оставьте пустым, если не хотите менять)">
+            </div>
+            <div class="form-group">
+                <label for="updateOrderProductId">Новый ID услуги:</label>
+                <input type="number" id="updateOrderProductId" placeholder="Введите новый ID услуги (оставьте пустым, если не хотите менять)">
+            </div>
+            <button onclick="updateOrder()">Обновить заказ</button>
+            <div id="response-update-order" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- DELETE /orders/{id} -->
+        <div class="api-form">
+            <div class="endpoint-info">DELETE /orders/{id} - Удалить заказ</div>
+            <div class="form-group">
+                <label for="deleteOrderId">ID заказа:</label>
+                <input type="text" id="deleteOrderId" placeholder="Введите ID заказа для удаления (UUID)">
+            </div>
+            <button onclick="deleteOrder()">Удалить заказ</button>
+            <div id="response-delete-order" class="response" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Базовый URL для API
+        const API_BASE_URL = '/api';
+
+        // Функция для выполнения запросов к API
+        async function testEndpoint(method, endpoint) {
+            try {
+                const response = await fetch(API_BASE_URL + endpoint, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.text();
+                const jsonData = data ? JSON.parse(data) : {};
+                
+                // Определяем ID элемента для отображения результата
+                let responseId;
+                if (endpoint.startsWith('/users')) {
+                    responseId = endpoint === '/users' ? 'response-users' : 'response-user';
+                } else if (endpoint.startsWith('/products')) {
+                    responseId = endpoint === '/products' ? 'response-products' : 'response-product';
+                } else if (endpoint.startsWith('/orders')) {
+                    responseId = endpoint === '/orders' ? 'response-orders' : 'response-order';
+                }
+                
+                const responseElement = document.getElementById(responseId);
+                responseElement.textContent = JSON.stringify(jsonData, null, 2);
+                responseElement.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при выполнении запроса: ' + error.message);
+            }
+        }
+        
+        // Функция для создания пользователя
+        async function createUser() {
+            try {
+                const userData = {
+                    first_name: document.getElementById('firstName').value,
+                    last_name: document.getElementById('lastName').value
+                };
+                
+                // Добавляем необязательные поля, если они заполнены
+                const patronymic = document.getElementById('patronymic').value;
+                if (patronymic) userData.patronymic = patronymic;
+                
+                const email = document.getElementById('email').value;
+                if (email) userData.email = email;
+                
+                const phone = document.getElementById('phone').value;
+                if (phone) userData.phone = phone;
+                
+                const response = await fetch(API_BASE_URL + '/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.text();
+                const jsonData = data ? JSON.parse(data) : {};
+                
+                const responseElement = document.getElementById('response-create-user');
+                responseElement.textContent = JSON.stringify(jsonData, null, 2);
+                responseElement.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при создании пользователя: ' + error.message);
+            }
+        }
+        
+        // Функция для создания услуги
+        async function createProduct() {
+            try {
+                const name = document.getElementById('productName').value;
+                const scheduleTimeStr = document.getElementById('scheduleTime').value;
+                const priceStr = document.getElementById('productPrice').value;
+                
+                // Проверяем обязательные поля
+                if (!name) {
+                    alert('Пожалуйста, введите название услуги');
+                    return;
+                }
+                
+                if (!scheduleTimeStr) {
+                    alert('Пожалуйста, введите время выполнения услуги');
+                    return;
+                }
+                
+                if (!priceStr) {
+                    alert('Пожалуйста, введите цену услуги');
+                    return;
+                }
+                
+                const schedule_time = parseInt(scheduleTimeStr);
+                const price = parseInt(priceStr);
+                
+                // Проверяем числовые значения
+                if (isNaN(schedule_time) || schedule_time <= 0) {
+                    alert('Время выполнения должно быть положительным числом');
+                    return;
+                }
+                
+                if (isNaN(price) || price < 0) {
+                    alert('Цена должна быть неотрицательным числом');
+                    return;
+                }
+                
+                const productData = {
+                    name: name,
+                    schedule_time: schedule_time,
+                    price: price,
+                    is_active: document.getElementById('productActive').value === 'true'
+                };
+                
+                const response = await fetch(API_BASE_URL + '/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(productData)
+                });
+                
+                // Выводим статус ответа для диагностики
+                console.log('Status:', response.status);
+                console.log('Status Text:', response.statusText);
+                
+                const data = await response.text();
+                console.log('Response Data:', data);
+                
+                try {
+                    const jsonData = data ? JSON.parse(data) : {};
+                    const responseElement = document.getElementById('response-create-product');
+                    responseElement.textContent = JSON.stringify(jsonData, null, 2);
+                    responseElement.style.display = 'block';
+                } catch (e) {
+                    // Если не получается распарсить JSON, показываем raw текст
+                    const responseElement = document.getElementById('response-create-product');
+                    responseElement.textContent = `Status: ${response.status} ${response.statusText}\n\n${data}`;
+                    responseElement.style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при создании услуги: ' + error.message);
+            }
+        }
+        
+        // Функция для создания заказа
+        async function createOrder() {
+            try {
+                const orderData = {
+                    user_id: parseInt(document.getElementById('orderUserId').value),
+                    product_id: parseInt(document.getElementById('orderProductId').value)
+                };
+                
+                const response = await fetch(API_BASE_URL + '/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const data = await response.text();
+                const jsonData = data ? JSON.parse(data) : {};
+                
+                const responseElement = document.getElementById('response-create-order');
+                responseElement.textContent = JSON.stringify(jsonData, null, 2);
+                responseElement.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при создании заказа: ' + error.message);
+            }
+        }
+
+        // Функция для обновления пользователя
+        async function updateUser() {
+            try {
+                const userId = document.getElementById('updateUserId').value;
+                if (!userId) {
+                    alert('Пожалуйста, введите ID пользователя');
+                    return;
+                }
+                
+                const userData = {};
+                
+                const firstName = document.getElementById('updateFirstName').value;
+                if (firstName) userData.first_name = firstName;
+                
+                const lastName = document.getElementById('updateLastName').value;
+                if (lastName) userData.last_name = lastName;
+                
+                const patronymic = document.getElementById('updatePatronymic').value;
+                if (patronymic) userData.patronymic = patronymic;
+                
+                const email = document.getElementById('updateEmail').value;
+                if (email) userData.email = email;
+                
+                const phone = document.getElementById('updatePhone').value;
+                if (phone) userData.phone = phone;
+                
+                // Проверяем, что есть хотя бы одно поле для обновления
+                if (Object.keys(userData).length === 0) {
+                    alert('Пожалуйста, введите хотя бы одно поле для обновления');
+                    return;
+                }
+                
+                const response = await fetch(API_BASE_URL + '/users/' + userId, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.text();
+                const jsonData = data ? JSON.parse(data) : {};
+                
+                const responseElement = document.getElementById('response-update-user');
+                responseElement.textContent = JSON.stringify(jsonData, null, 2);
+                responseElement.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при обновлении пользователя: ' + error.message);
+            }
+        }
+
+        // Функция для обновления услуги
+        async function updateProduct() {
+            try {
+                const productId = document.getElementById('updateProductId').value;
+                if (!productId) {
+                    alert('Пожалуйста, введите ID услуги');
+                    return;
+                }
+                
+                const productData = {};
+                
+                const name = document.getElementById('updateProductName').value;
+                if (name) productData.name = name;
+                
+                const scheduleTimeStr = document.getElementById('updateScheduleTime').value;
+                if (scheduleTimeStr) {
+                    const schedule_time = parseInt(scheduleTimeStr);
+                    if (isNaN(schedule_time) || schedule_time <= 0) {
+                        alert('Время выполнения должно быть положительным числом');
+                        return;
+                    }
+                    productData.schedule_time = schedule_time;
+                }
+                
+                const priceStr = document.getElementById('updateProductPrice').value;
+                if (priceStr) {
+                    const price = parseInt(priceStr);
+                    if (isNaN(price) || price < 0) {
+                        alert('Цена должна быть неотрицательным числом');
+                        return;
+                    }
+                    productData.price = price;
+                }
+                
+                const isActive = document.getElementById('updateProductActive').value;
+                if (isActive !== '') {
+                    productData.is_active = isActive === 'true';
+                }
+                
+                // Проверяем, что есть хотя бы одно поле для обновления
+                if (Object.keys(productData).length === 0) {
+                    alert('Пожалуйста, введите хотя бы одно поле для обновления');
+                    return;
+                }
+                
+                const response = await fetch(API_BASE_URL + '/products/' + productId, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(productData)
+                });
+                
+                const data = await response.text();
+                const jsonData = data ? JSON.parse(data) : {};
+                
+                const responseElement = document.getElementById('response-update-product');
+                responseElement.textContent = JSON.stringify(jsonData, null, 2);
+                responseElement.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при обновлении услуги: ' + error.message);
+            }
+        }
+
+        // Функция для обновления заказа
+        async function updateOrder() {
+            try {
+                const orderId = document.getElementById('updateOrderId').value;
+                if (!orderId) {
+                    alert('Пожалуйста, введите ID заказа');
+                    return;
+                }
+                
+                const orderData = {};
+                
+                const userIdStr = document.getElementById('updateOrderUserId').value;
+                if (userIdStr) {
+                    const user_id = parseInt(userIdStr);
+                    if (isNaN(user_id) || user_id <= 0) {
+                        alert('ID пользователя должно быть положительным числом');
+                        return;
+                    }
+                    orderData.user_id = user_id;
+                }
+                
+                const productIdStr = document.getElementById('updateOrderProductId').value;
+                if (productIdStr) {
+                    const product_id = parseInt(productIdStr);
+                    if (isNaN(product_id) || product_id <= 0) {
+                        alert('ID услуги должно быть положительным числом');
+                        return;
+                    }
+                    orderData.product_id = product_id;
+                }
+                
+                // Проверяем, что есть хотя бы одно поле для обновления
+                if (Object.keys(orderData).length === 0) {
+                    alert('Пожалуйста, введите хотя бы одно поле для обновления');
+                    return;
+                }
+                
+                const response = await fetch(API_BASE_URL + '/orders/' + orderId, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const data = await response.text();
+                const jsonData = data ? JSON.parse(data) : {};
+                
+                const responseElement = document.getElementById('response-update-order');
+                responseElement.textContent = JSON.stringify(jsonData, null, 2);
+                responseElement.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при обновлении заказа: ' + error.message);
+            }
+        }
+
+        // Функция для удаления пользователя
+        async function deleteUser() {
+            try {
+                const userId = document.getElementById('deleteUserId').value;
+                if (!userId) {
+                    alert('Пожалуйста, введите ID пользователя');
+                    return;
+                }
+                
+                if (!confirm('Вы уверены, что хотите удалить пользователя с ID ' + userId + '?')) {
+                    return;
+                }
+                
+                const response = await fetch(API_BASE_URL + '/users/' + userId, {
+                    method: 'DELETE'
+                });
+                
+                let result;
+                if (response.status === 204) {
+                    result = { success: true, message: 'Пользователь успешно удален' };
+                } else {
+                    const data = await response.text();
+                    result = data ? JSON.parse(data) : { success: false };
+                }
+                
+                const responseElement = document.getElementById('response-delete-user');
+                responseElement.textContent = JSON.stringify(result, null, 2);
+                responseElement.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при удалении пользователя: ' + error.message);
+            }
+        }
+
+        // Функция для удаления услуги
+        async function deleteProduct() {
+            try {
+                const productId = document.getElementById('deleteProductId').value;
+                if (!productId) {
+                    alert('Пожалуйста, введите ID услуги');
+                    return;
+                }
+                
+                if (!confirm('Вы уверены, что хотите удалить услугу с ID ' + productId + '?')) {
+                    return;
+                }
+                
+                const response = await fetch(API_BASE_URL + '/products/' + productId, {
+                    method: 'DELETE'
+                });
+                
+                let result;
+                if (response.status === 204) {
+                    result = { success: true, message: 'Услуга успешно удалена' };
+                } else {
+                    const data = await response.text();
+                    result = data ? JSON.parse(data) : { success: false };
+                }
+                
+                const responseElement = document.getElementById('response-delete-product');
+                responseElement.textContent = JSON.stringify(result, null, 2);
+                responseElement.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при удалении услуги: ' + error.message);
+            }
+        }
+
+        // Функция для удаления заказа
+        async function deleteOrder() {
+            try {
+                const orderId = document.getElementById('deleteOrderId').value;
+                if (!orderId) {
+                    alert('Пожалуйста, введите ID заказа');
+                    return;
+                }
+                
+                if (!confirm('Вы уверены, что хотите удалить заказ с ID ' + orderId + '?')) {
+                    return;
+                }
+                
+                const response = await fetch(API_BASE_URL + '/orders/' + orderId, {
+                    method: 'DELETE'
+                });
+                
+                let result;
+                if (response.status === 204) {
+                    result = { success: true, message: 'Заказ успешно удален' };
+                } else {
+                    const data = await response.text();
+                    result = data ? JSON.parse(data) : { success: false };
+                }
+                
+                const responseElement = document.getElementById('response-delete-order');
+                responseElement.textContent = JSON.stringify(result, null, 2);
+                responseElement.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при удалении заказа: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
