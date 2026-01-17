@@ -5,6 +5,10 @@
 
 ## Запуск сервиса
     docker compose --env-file .env -f docker-compose.yml up
+
+#### Сайт автосервиса будет доступен по адресу: 
+    http://127.0.0.1:3000
+
 #### Сервисы будет доступен по адресам:
     Gateway         http://127.0.0.1:8000
     User-Service    http://127.0.0.1:8001    

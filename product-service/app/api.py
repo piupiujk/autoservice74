@@ -28,14 +28,16 @@ async def create_product(
     schedule_time: int = Body(...),
     price: int = Body(...),
     is_active: bool = Body(True),
+    description: str = Body(None),
     dao: ProductDAO = Depends(get_product_dao)
 ) -> dict:
     """Создание новой услуги."""
-    product = await dao.create_product(name, schedule_time, price, is_active)
+    product = await dao.create_product(name, schedule_time, price, is_active, description)
     
     return {
         'id_': product.id_,
         'name': product.name,
+        'description': product.description,
         'schedule_time': product.schedule_time,
         'price': product.price,
         'is_active': product.is_active,
@@ -45,13 +47,14 @@ async def create_product(
 
 @router.get('/products', tags=['products'])
 async def get_products(dao: ProductDAO = Depends(get_product_dao)) -> list[dict]:
-    """Получение списка всех услуг."""
+    """Получение списка всех активных услуг."""
     products = await dao.get_products()
     
     return [
         {
             'id_': product.id_,
             'name': product.name,
+            'description': getattr(product, 'description', None),
             'schedule_time': product.schedule_time,
             'price': product.price,
             'is_active': product.is_active,
@@ -88,13 +91,14 @@ async def get_product(
 async def update_product(
     product_id: int,
     name: str | None = None,
+    description: str | None = None,
     schedule_time: int | None = None,
     price: int | None = None,
     is_active: bool | None = None,
     dao: ProductDAO = Depends(get_product_dao)
 ) -> dict:
     """Частичное обновление услуги."""
-    product = await dao.update_product(product_id, name, schedule_time, price, is_active)
+    product = await dao.update_product(product_id, name, description, schedule_time, price, is_active)
     
     if not product:
         raise HTTPException(
@@ -105,6 +109,7 @@ async def update_product(
     return {
         'id_': product.id_,
         'name': product.name,
+        'description': product.description,
         'schedule_time': product.schedule_time,
         'price': product.price,
         'is_active': product.is_active,

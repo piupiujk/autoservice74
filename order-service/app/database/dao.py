@@ -1,4 +1,5 @@
 """Модуль для работы с заказами в базе данных."""
+from datetime import datetime
 from uuid import UUID
 from typing import List, Optional
 
@@ -20,13 +21,15 @@ class OrderDAO:
         self,
         user_id: int,
         product_id: int,
-        status: OrderStatusEnum = OrderStatusEnum.CREATED
+        status: OrderStatusEnum = OrderStatusEnum.CREATED,
+        booking_time: datetime = None
     ) -> OrderModel:
         """Создание нового заказа."""
         order = OrderModel(
             user_id=user_id,
             product_id=product_id,
-            status=status
+            status=status,
+            booking_time=booking_time
         )
         self.db.add(order)
         await self.db.commit()

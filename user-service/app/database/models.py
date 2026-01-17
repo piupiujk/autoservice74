@@ -22,6 +22,8 @@ class UserModel(BaseModel):
         email: Контактный email
         phone: Контактный номер телефона
         bonus_score: Бонусные баллы
+        car_info: Информация об автомобиле пользователя
+        additional_info: Дополнительная информация от пользователя
         created_to: Дата и время создания пользователя
         update_to: Дата и время обновления пользователя
     """
@@ -68,6 +70,16 @@ class UserModel(BaseModel):
         name='bonus_score',
         type_=Integer,
         nullable=False,
+    )
+    car_info: Mapped[str] = mapped_column(
+        name='car_info',
+        type_=String(length=200),
+        nullable=True,
+    )
+    additional_info: Mapped[str] = mapped_column(
+        name='additional_info',
+        type_=String(length=500),
+        nullable=True,
     )
     created_to: Mapped[datetime] = mapped_column(
         name='created_to',

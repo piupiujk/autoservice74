@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, HTTPException, status, Depends, Body
 from uuid import UUID
 
@@ -28,16 +30,18 @@ async def create_order(
     user_id: int = Body(...),
     product_id: int = Body(...),
     status: OrderStatusEnum = Body(OrderStatusEnum.CREATED),
+    booking_time: datetime = Body(None),
     dao: OrderDAO = Depends(get_order_dao)
 ) -> dict:
     """Создание нового заказа."""
-    order = await dao.create_order(user_id, product_id, status)
+    order = await dao.create_order(user_id, product_id, status, booking_time)
     
     return {
         'order_id': str(order.order_id),
         'user_id': order.user_id,
         'product_id': order.product_id,
         'status': order.status,
+        'booking_time': order.booking_time,
         'created_to': order.created_to,
         'update_to': order.update_to
     }
@@ -53,6 +57,7 @@ async def get_orders(dao: OrderDAO = Depends(get_order_dao)) -> list[dict]:
             'user_id': order.user_id,
             'product_id': order.product_id,
             'status': order.status,
+            'booking_time': order.booking_time,
             'created_to': order.created_to,
             'update_to': order.update_to
         } for order in orders
@@ -77,6 +82,7 @@ async def get_order(
         'user_id': order.user_id,
         'product_id': order.product_id,
         'status': order.status,
+        'booking_time': order.booking_time,
         'created_to': order.created_to,
         'update_to': order.update_to
     }
@@ -103,6 +109,7 @@ async def update_order(
         'user_id': order.user_id,
         'product_id': order.product_id,
         'status': order.status,
+        'booking_time': order.booking_time,
         'created_to': order.created_to,
         'update_to': order.update_to
     }

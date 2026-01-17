@@ -24,6 +24,7 @@ class OrderModel(BaseModel):
         user_id: id пользователя
         product_id: id услуги
         status: Статус заказа
+        booking_time: Время записи на обслуживание
         created_to: Дата и время создания заказа
         update_to: Дата и время обновления заказа
     """
@@ -61,6 +62,11 @@ class OrderModel(BaseModel):
         ),
         name='status',
         nullable=False,
+    )
+    booking_time: Mapped[datetime] = mapped_column(
+        name='booking_time',
+        type_=DateTime(timezone=True),
+        nullable=True,
     )
     created_to: Mapped[datetime] = mapped_column(
         name='created_to',

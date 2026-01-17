@@ -101,10 +101,12 @@ async def update_user(
     email: str | None = None,
     phone: str | None = None,
     bonus_score: int | None = None,
+    car_info: str | None = None,
+    additional_info: str | None = None,
     dao: UserDAO = Depends(get_user_dao)
 ) -> dict:
     """Частичное обновление пользователя."""
-    user = await dao.update_user(user_id, first_name, last_name, patronymic, email, phone, bonus_score)
+    user = await dao.update_user(user_id, first_name, last_name, patronymic, email, phone, bonus_score, car_info, additional_info)
     
     if not user:
         raise HTTPException(
@@ -120,6 +122,8 @@ async def update_user(
         'email': user.email,
         'phone': user.phone,
         'bonus_score': user.bonus_score,
+        'car_info': user.car_info,
+        'additional_info': user.additional_info,
         'created_to': user.created_to,
         'update_to': user.update_to
     }

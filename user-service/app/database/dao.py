@@ -57,7 +57,9 @@ class UserDAO:
         patronymic: str = None,
         email: str = None,
         phone: str = None,
-        bonus_score: int = None
+        bonus_score: int = None,
+        car_info: str = None,
+        additional_info: str = None
     ) -> Optional[UserModel]:
         """Обновление пользователя."""
         user = await self.get_user(user_id)
@@ -76,6 +78,10 @@ class UserDAO:
             user.phone = phone
         if bonus_score is not None:
             user.bonus_score = bonus_score
+        if car_info is not None:
+            user.car_info = car_info
+        if additional_info is not None:
+            user.additional_info = additional_info
         
         await self.db.commit()
         await self.db.refresh(user)

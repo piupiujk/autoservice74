@@ -19,14 +19,16 @@ class ProductDAO:
         name: str,
         schedule_time: int,
         price: int,
-        is_active: bool = True
+        is_active: bool = True,
+        description: str = None
     ) -> ProductModel:
         """Создание нового продукта."""
         product = ProductModel(
             name=name,
             schedule_time=schedule_time,
             price=price,
-            is_active=is_active
+            is_active=is_active,
+            description=description
         )
         self.db.add(product)
         await self.db.commit()
@@ -41,8 +43,10 @@ class ProductDAO:
         return result.scalar_one_or_none()
     
     async def get_products(self) -> List[ProductModel]:
-        """Получение всех продуктов."""
-        result = await self.db.execute(select(ProductModel))
+        """Получение всех активных продуктов."""
+        result = await self.db.execute(
+            select(ProductModel).where(ProductModel.is_active == True)
+        )
         return result.scalars().all()
     
     async def update_product(
@@ -50,9 +54,9 @@ class ProductDAO:
         product_id: int,
         name: str = None,
         description: str = None,
-        price: float = None,
-        category: str = None,
-        in_stock: bool = None
+        schedule_time: int = None,
+        price: int = None,
+        is_active: bool = None
     ) -> Optional[ProductModel]:
         """Обновление продукта."""
         product = await self.get_product(product_id)
@@ -63,12 +67,12 @@ class ProductDAO:
             product.name = name
         if description is not None:
             product.description = description
+        if schedule_time is not None:
+            product.schedule_time = schedule_time
         if price is not None:
             product.price = price
-        if category is not None:
-            product.category = category
-        if in_stock is not None:
-            product.in_stock = in_stock
+        if is_active is not None:
+            product.is_active = is_active
         
         await self.db.commit()
         await self.db.refresh(product)

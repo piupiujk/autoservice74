@@ -17,6 +17,7 @@ class ProductModel(BaseModel):
         name: Название услуги
         schedule_time: Примерное время исполнения услуги в минутах
         price: Примерная цена услуги
+        description: Описание услуги
         created_to: Дата и время создания услуги
         update_to: Дата и время обновления услуги
 
@@ -45,6 +46,11 @@ class ProductModel(BaseModel):
         name='price',
         type_=Integer,
         nullable=False,
+    )
+    description: Mapped[str] = mapped_column(
+        name='description',
+        type_=String(length=500),
+        nullable=True,
     )
     is_active: Mapped[bool] = mapped_column(
         name='is_active',
